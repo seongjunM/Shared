@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>방 만들기</h2>
+        <form id="create-room-form">
+            <h3>내 정보</h3>
+            <div class="form-group">
+                <label for="user-height">키 (cm)</label>
+                <input type="number" id="user-height" required>
+            </div>
+            <div class="form-group">
+                <label for="user-weight">몸무게 (kg)</label>
+                <input type="number" id="user-weight" required>
+            </div>
+            <div class="form-group">
+                <label for="user-bodyfat">체지방량 (%)</label>
+                <input type="number" id="user-bodyfat" required>
+            </div>
+
+            <h3>방 정보</h3>
+            <div class="form-group">
+                <label for="room-goal">목표 (예: 체지방 29% → 27%)</label>
+                <input type="text" id="room-goal" required>
+            </div>
+            <div class="form-group">
+                <label for="room-betting">배팅 금액 (pt)</label>
+                <input type="number" id="room-betting" required>
+            </div>
+            <div class="form-group">
+                <label for="room-duration">기간 (예: 1개월)</label>
+                <input type="text" id="room-duration" required>
+            </div>
+
+            <button type="submit">방 만들기</button>
+        </form>
+        <p><a href="main.html">Back to Main Page</a></p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

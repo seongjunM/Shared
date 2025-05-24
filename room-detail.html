@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Room Details</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="screen">
+        <div class="container"> <!-- Changed class here -->
+            <div class="back-button-container">
+                <a href="main.html" class="back-button">←</a>
+            </div>
+            <div class="opponent-info-section">
+                <div class="section-title">상대방 정보</div>
+                <div class="info-card">
+                    <div class="info-item">
+                        <div class="label">체중</div>
+                        <div class="value" id="detail-weight"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">키</div>
+                        <div class="value" id="detail-height"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">체지방률</div>
+                        <div class="value" id="detail-bodyfat"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="goal-setting-section">
+                 <div class="section-title">목표 설정</div>
+                <div class="info-card">
+                    <div class="info-item">
+                        <div class="label">목표 감량</div>
+                        <div class="value blue-text" id="detail-goal-reduction"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">기간</div>
+                        <div class="value" id="detail-duration"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">배팅금액</div>
+                        <div class="value green-text" id="detail-betting"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="apply-button-container">
+                <button class="button">신청하기</button>
+            </div>
+
+            <div class="acceptance-text">
+                상대방이 24시간 이내에<br />수락하면 시작됩니다
+            </div>
+        </div>
+    </div>
+</body>
+</html>
