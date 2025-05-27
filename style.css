@@ -4,9 +4,10 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #f0f2f5;
     margin: 0;
     padding: 20px;
+    flex-direction: column;
 }
 
 .container {
@@ -19,25 +20,6 @@ body {
     text-align: center;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Space between point display and button */
-}
-
-#current-points {
-    font-size: 1em;
-    color: #007bff;
-    font-weight: bold;
-}
-
 h2,
 h1 {
     margin-top: 0;
@@ -45,16 +27,62 @@ h1 {
     color: #333;
 }
 
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
 label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
     color: #555;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.secondary-button {
+    background-color: #6c757d; /* �뚯깋 怨꾩뿴 */
+    color: white;
+    border: none;
+}
+
+.secondary-button:hover {
+    background-color: #5a6268;
+}
+
+.back-button-container {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.header button {
+    width: auto;
+    margin-top: 0;
+}
+
+.back-button {
+    font-size: 1.5em;
+    text-decoration: none;
+    color: #333;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 input[type="text"],
@@ -79,171 +107,15 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.secondary-button {
-    background-color: #6c757d;
-}
-
-.secondary-button:hover {
-    background-color: #5a6268;
-}
-
-a {
+#current-points {
+    font-size: 1em;
     color: #007bff;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Main Page Specific Styles */
-.room-list {
-    margin-top: 20px;
-    text-align: left;
-}
-
-.room-item {
-    border: 1px solid #eee;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.room-item h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.room-item p {
-    margin-bottom: 10px;
-    color: #666;
-    font-size: 0.9em;
-}
-
-.room-item .status {
     font-weight: bold;
 }
 
-.status.available {
-    color: green;
-}
-
-.status.full {
-    color: red;
-}
-
-.room-item button {
-    width: auto;
-    padding: 8px 15px;
-    font-size: 0.9em;
-}
-
-/* Adjust button width for the create room button in the header */
-.header button {
-    width: auto;
-    margin-top: 0;
-}
-
-/* Point Management Page Styles */
-.point-info h2 {
-    color: #007bff;
-    margin: 10px 0;
-}
-
-.back-button-container {
+.form-group {
+    margin-bottom: 15px;
     text-align: left;
-    margin-bottom: 20px;
-}
-
-.back-button {
-    font-size: 1.5em;
-    text-decoration: none;
-    color: #333;
-}
-
-.charge-form, .refund-form {
-    margin-top: 20px;
-}
-
-.charge-form p, .refund-form p {
-    margin-bottom: 15px;
-    font-size: 1.1em;
-}
-
-.charge-form button, .refund-form button {
-    margin-top: 10px;
-}
-
-/* Room Detail Page Styles (based on provided image) */
-.screen .div {
-    width: 100%;
-    max-width: 400px; /* Keep consistent with other pages */
-    margin: 0 auto; /* Center the content */
-    background-color: #f9fafb; /* Match the background color */
-    padding: 20px; /* Add some padding */
-    position: relative;
-}
-
-.opponent-info-section,
-.goal-setting-section {
-    margin-bottom: 20px;
-}
-
-.section-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #000;
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.info-card {
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.label {
-    font-family: "Poppins-Regular", Helvetica;
-    font-weight: 400;
-    color: #4b5563;
-    font-size: 16px;
-}
-
-.value {
-    font-family: "Poppins-SemiBold", Helvetica;
-    font-weight: 600;
-    font-size: 16px;
-    color: #000;
-    text-align: right;
 }
 
 .blue-text {
@@ -252,17 +124,4 @@ a:hover {
 
 .green-text {
     color: #059669;
-}
-
-.apply-button-container {
-    margin-top: 30px;
-}
-
-.acceptance-text {
-    font-family: "Poppins-SemiBold", Helvetica;
-    font-weight: 600;
-    color: #000;
-    font-size: 18px;
-    text-align: center;
-    margin-top: 20px;
 }
