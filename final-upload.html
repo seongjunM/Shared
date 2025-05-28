@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .upload-box:hover {
+            border-color: #007bff;
+        }
+        .upload-icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+        .file-types {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .hidden-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>  
+    <div class="screen">
+        <div class="container">
+            <div class="header">
+                <a href="room-detail.html" class="back-button">←</a>
+                <div class="info-icon">ⓘ</div>
+            </div>
+            <div class="upload-section">
+                <div class="upload-box" id="uploadBox">
+                    <img src="cloud-upload-icon.png" alt="Upload Icon" class="upload-icon">
+                    <p>영상을 업로드 해주세요</p>
+                    <p class="file-types">PNG, JPG, GIF 최대 10MB</p>
+                    <input type="file" id="fileInput" class="hidden-input" accept=".png, .jpg, .jpeg, .gif, .mp4, .mov, .avi">
+                </div>
+            </div>
+            <div class="submit-button-container">
+                <button class="button" id="sendButton">전송하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const sendButton = document.getElementById('sendButton');
+
+        uploadBox.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+            if (files.length > 0) {
+                console.log("Selected file:", files[0].name);
+                // At this point, a file is selected but not necessarily uploaded or sent.
+                // The user needs to click the '전송하기' button to proceed.
+            }
+        });
+
+        sendButton.addEventListener('click', () => {
+            const files = fileInput.files;
+            if (files.length > 0) {
+                console.log("Attempting to send file and navigate...");
+                // *** Placeholder for actual file upload logic ***
+                // Before navigating, you would typically upload the file to a server.
+                // The uploadFile function below is a commented-out example.
+                // uploadFile(files[0]); 
+                
+                // For the initial upload, navigate to the battle screen.
+                window.location.href = 'battle-screen.html';
+            } else {
+                alert("Please select a file first before sending.");
+            }
+        });
+
+        // Example uploadFile function (currently not used by the send button logic above)
+        // function uploadFile(file) {
+        //     const formData = new FormData();
+        //     formData.append('file', file);
+
+        //     // Replace with your actual upload endpoint
+        //     fetch('/upload-endpoint', {
+        //         method: 'POST',
+        //         body: formData
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log('Upload successful:', data);
+        //         // Handle success - maybe enable the send button or provide feedback
+        //     })
+        //     .catch(error => {
+        //         console.error('Upload failed:', error);
+        //         // Handle error
+        //     });
+        // }
+
+    </script>
+</body>
+</html>

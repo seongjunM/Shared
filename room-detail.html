@@ -103,6 +103,10 @@
         const remainingTimeDiv = document.getElementById('remainingTime');
 
         function updateBattleStateUI() {
+            // *** This check needs to be based on real-time data from your backend ***
+            // For example, fetch the room state and check if both have accepted.
+            // isBattleStarted = fetchedRoomState.bothAccepted;
+
             if (isBattleStarted) {
                 preBattleSection.classList.add('hidden');
                 battleInProgressSection.classList.remove('hidden');
@@ -139,9 +143,9 @@
                     clearInterval(timerInterval); // Stop the timer
                     timerInterval = null; // Reset timerInterval
 
-                    // *** Redirect to upload.html when the battle ends ***
-                    console.log("Battle ended. Redirecting to upload page.");
-                    window.location.href = 'upload.html';
+                    // *** Redirect to final-upload.html when the battle ends ***
+                    console.log("Battle ended. Redirecting to final upload page.");
+                    window.location.href = 'final-upload.html';
 
                     return;
                 }
