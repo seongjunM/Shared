@@ -11,7 +11,7 @@
             padding: 40px 20px;
             text-align: center;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 8样的;
             margin-bottom: 20px;
         }
         .upload-box:hover {
@@ -31,7 +31,7 @@
         }
     </style>
 </head>
-<body>
+<body>  
     <div class="screen">
         <div class="container">
             <div class="header">
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="submit-button-container">
-                <button class="button">전송하기</button>
+                <button class="button" id="sendButton">전송하기</button>
             </div>
         </div>
     </div>
@@ -55,6 +55,7 @@
     <script>
         const uploadBox = document.getElementById('uploadBox');
         const fileInput = document.getElementById('fileInput');
+        const sendButton = document.getElementById('sendButton');
 
         uploadBox.addEventListener('click', () => {
             fileInput.click();
@@ -64,31 +65,47 @@
             const files = event.target.files;
             if (files.length > 0) {
                 console.log("Selected file:", files[0].name);
-                // File 업로드하려면 uploadFile(files[0]) 활성화 하고 fetch API 사용해서 지정된 엔드포인트로 전송하도록 코드를 구현해야함.
-                // e.g., using FormData and fetch()
-                // Example: uploadFile(files[0]);
+                // At this point, a file is selected but not necessarily uploaded or sent.
+                // The user needs to click the '전송하기' button to proceed.
             }
         });
 
-        function uploadFile(file) {
-            const formData = new FormData();
-            formData.append('file', file);
+        sendButton.addEventListener('click', () => {
+            const files = fileInput.files;
+            if (files.length > 0) {
+                console.log("Attempting to send file and navigate...");
+                // *** Placeholder for actual file upload logic ***
+                // Before navigating, you would typically upload the file to a server.
+                // The uploadFile function below is a commented-out example.
+                // uploadFile(files[0]); 
+                
+                // Navigate to the new battle screen (battle-screen.html) after 'sending'.
+                window.location.href = 'battle-screen.html';
+            } else {
+                alert("Please select a file first before sending.");
+            }
+        });
 
-            // Replace with your actual upload endpoint
-            fetch('/upload-endpoint', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Upload successful:', data);
-                // Handle success
-            })
-            .catch(error => {
-                console.error('Upload failed:', error);
-                // Handle error
-            });
-        }
+        // Example uploadFile function (currently not used by the send button logic above)
+        // function uploadFile(file) {
+        //     const formData = new FormData();
+        //     formData.append('file', file);
+
+        //     // Replace with your actual upload endpoint
+        //     fetch('/upload-endpoint', {
+        //         method: 'POST',
+        //         body: formData
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log('Upload successful:', data);
+        //         // Handle success - maybe enable the send button or provide feedback
+        //     })
+        //     .catch(error => {
+        //         console.error('Upload failed:', error);
+        //         // Handle error
+        //     });
+        // }
 
     </script>
 </body>

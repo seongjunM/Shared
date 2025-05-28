@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Battle Screen</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Add any specific styles for this screen here */
+        .video-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 10px;
+        }
+        .video-placeholder {
+            width: 100%;
+            height: 300px; /* Adjust as needed */
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+        }
+        .status-message {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #333;
+            min-height: 1.5em; /* Reserve space to prevent layout shifts */
+        }
+        .betting-prompt {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .accept-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>  
+    <div class="screen">
+        <div class="container">
+            <div class="header">
+                <!-- Back button or other header elements -->
+                <!-- Decide where this screen fits in the flow and set the back button accordingly -->
+                <!-- For now, a placeholder back button -->
+                <a href="#" class="back-button">←</a> 
+                <div class="info-icon">ⓘ</div>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <div class="video-container">
+                <div id="opponentVideo" class="video-placeholder">
+                    상대방 영상 표시 또는 '상대방이 아직 영상을 업로드하지 않았습니다'
+                </div>
+                <!-- An actual video element would be added here by JavaScript if a video is available -->
+                <!-- <video id="opponentVideoElement" controls style="width: 100%; display: none;"></video> -->
+            </div>
+
+            <div id="bettingSection" style="display: none;"> <!-- This section will be shown if opponent uploaded -->
+                <div class="betting-prompt">
+                    배팅을 시작하시겠습니까?
+                </div>
+                <div class="accept-button-container">
+                    <button class="button" id="acceptButton">수락</button>
+                </div>
+            </div>
+
+            <!-- This message will be shown if opponent hasn't uploaded -->
+            <div id="waitingForUploadMessage" class="status-message">
+                상대방이 아직 영상을 업로드하지 않았습니다
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // This is where the JavaScript logic for this page will go.
+        // It will handle:
+        // 1. Checking opponent upload status (requires backend communication)
+        // 2. Displaying opponent video or waiting message
+        // 3. Showing the betting prompt and accept button if opponent uploaded
+        // 4. Handling the accept button click
+        // 5. Displaying acceptance status messages
+        // 6. Navigating to the next screen when both accept (requires backend communication)
+
+        const statusMessageDiv = document.getElementById('statusMessage');
+        const opponentVideoDiv = document.getElementById('opponentVideo'); // Or the video element itself
+        const bettingSectionDiv = document.getElementById('bettingSection');
+        const acceptButton = document.getElementById('acceptButton');
+        const waitingForUploadMessageDiv = document.getElementById('waitingForUploadMessage');
+
+        // --- Placeholder Logic (Requires Backend) ---
+        // This is a simplified example. You'll need real logic.
+
+        // Simulate initial state: assume opponent hasn't uploaded
+        let opponentHasUploaded = false; // This state should come from your backend
+        let myAcceptance = false; // This state should be managed
+        let opponentAcceptance = false; // This state should come from your backend
+
+        function updateScreenState() {
+            if (opponentHasUploaded) {
+                waitingForUploadMessageDiv.style.display = 'none';
+                bettingSectionDiv.style.display = 'block';
+                // Display opponent video (placeholder)
+                opponentVideoDiv.innerHTML = '상대방 영상 표시 (실제 영상 로드 필요)';
+                // If using a video element:
+                // const videoElement = document.getElementById('opponentVideoElement');
+                // videoElement.src = 'url_to_opponent_video'; // Set video source
+                // videoElement.style.display = 'block';
+                // opponentVideoDiv.style.display = 'none'; // Hide placeholder div
+
+                if (myAcceptance && opponentAcceptance) {
+                    statusMessageDiv.innerText = '둘 다 수락했습니다. 다음 화면으로 이동합니다...';
+                    // *** Navigate to the next screen ***
+                    // setTimeout(() => { window.location.href = 'next_screen.html'; }, 2000);
+                } else if (myAcceptance && !opponentAcceptance) {
+                    statusMessageDiv.innerText = '상대방이 요청을 수락할 때까지 기다리고 있습니다';
+                } else if (!myAcceptance && opponentAcceptance) {
+                     statusMessageDiv.innerText = '상대방이 수락했습니다';
+                } else {
+                    statusMessageDiv.innerText = ''; // No status message initially
+                }
+
+            } else {
+                waitingForUploadMessageDiv.style.display = 'block';
+                bettingSectionDiv.style.display = 'none';
+                 // Ensure placeholder is visible if video element is added later
+                 opponentVideoDiv.innerHTML = '상대방이 아직 영상을 업로드하지 않았습니다';
+                 // If using a video element:
+                // const videoElement = document.getElementById('opponentVideoElement');
+                // videoElement.style.display = 'none';
+                // opponentVideoDiv.style.display = 'flex'; // Show placeholder
+                 statusMessageDiv.innerText = '';
+            }
+        }
+
+        // Event listener for the Accept button
+        acceptButton.addEventListener('click', () => {
+            if (!myAcceptance) {
+                myAcceptance = true; // Simulate my acceptance
+                acceptButton.disabled = true; // Disable button after clicking
+                acceptButton.innerText = '수락 완료';
+                // *** Send my acceptance status to the backend here ***
+                console.log("My acceptance sent. Waiting for opponent...");
+                updateScreenState(); // Update UI based on my acceptance
+            }
+        });
+
+        // --- Initial Load / Polling (Requires Backend) ---
+        // On page load, you would typically fetch the current state from the backend:
+        // - opponentHasUploaded
+        // - opponentAcceptance
+
+        // Simulate fetching initial state (replace with actual fetch)
+        // setTimeout(() => {
+        //     opponentHasUploaded = true; // Simulate opponent uploading after a delay
+        //     console.log("Simulating opponent upload.");
+        //     updateScreenState();
+        // }, 5000); // Example: simulate opponent uploads after 5 seconds
+
+        // You might also need to poll the backend or use WebSockets
+        // to get real-time updates on opponent's upload and acceptance status.
+
+        // Initial UI update based on simulated state
+        updateScreenState();
+
+    </script>
+</body>
+</html>
