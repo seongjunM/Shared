@@ -95,7 +95,7 @@
         // Example room data (replace with actual data from backend)
         // Assuming roomCreationDate is a Date object or a string parsable by new Date()
         const roomCreationDate = new Date('2023-10-27T10:00:00Z'); // Example start date/time (UTC)
-        const roomDurationMonths = 3; // Example duration in months
+        const roomDurationSeconds = 2592000; // Example duration in seconds (30 days)
         // --- End Placeholder Variables ---
 
         const preBattleSection = document.getElementById('preBattleSection');
@@ -130,9 +130,8 @@
                 clearInterval(timerInterval);
             }
 
-            // Calculate battle end date
-            const battleEndDate = new Date(roomCreationDate);
-            battleEndDate.setMonth(battleEndDate.getMonth() + roomDurationMonths);
+            // Calculate battle end date using seconds
+            const battleEndDate = new Date(roomCreationDate.getTime() + roomDurationSeconds * 1000);
 
             function updateRemainingTimeDisplay() {
                 const now = new Date();
@@ -150,13 +149,10 @@
                     return;
                 }
 
-                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                // const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                // Calculate remaining seconds
+                const remainingSeconds = Math.floor(timeRemaining / 1000);
 
-                remainingTimeDiv.innerText = `남은 기간: ${days}일 ${hours}시간`;
-                // You can add minutes and seconds if you want more detail.
+                remainingTimeDiv.innerText = `남은 기간: ${remainingSeconds}초`;
             }
 
             // Update the display immediately and then every second
