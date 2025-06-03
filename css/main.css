@@ -1,0 +1,49 @@
+@import url('common.css');
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between point display and button */
+}
+
+.room-list {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.room-item {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.room-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.room-item p {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.room-item .status {
+    font-weight: bold;
+}
+
+.room-item button {
+    width: auto;
+    padding: 8px 15px;
+    font-size: 0.9em;
+}

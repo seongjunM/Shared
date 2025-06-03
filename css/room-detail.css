@@ -1,0 +1,67 @@
+@import url('common.css');
+
+.apply-button-container {
+    margin-top: 30px;
+}
+
+.acceptance-text {
+    font-family: "Poppins-SemiBold", Helvetica;
+    font-weight: 600;
+    color: #000;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.opponent-info-section,
+.goal-setting-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.label {
+    font-family: "Poppins-Regular", Helvetica;
+    font-weight: 400;
+    color: #4b5563;
+    font-size: 16px;
+}
+
+.value {
+    font-family: "Poppins-SemiBold", Helvetica;
+    font-weight: 600;
+    font-size: 16px;
+    color: #000;
+    text-align: right;
+}
+
+.info-card {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.screen .div {
+    width: 100%;
+    max-width: 400px; /* Keep consistent with other pages */
+    margin: 0 auto; /* Center the content */
+    background-color: #f9fafb; /* Match the background color */
+    padding: 20px; /* Add some padding */
+    position: relative;
+}

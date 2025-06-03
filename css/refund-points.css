@@ -1,0 +1,14 @@
+@import url('common.css');
+
+.refund-form {
+    margin-top: 20px;
+}
+
+.refund-form p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.refund-form button {
+    margin-top: 10px;
+}

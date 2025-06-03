@@ -4,180 +4,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <title>Room Details</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        /* Add any specific styles for the new section here */
-        .battle-in-progress-section {
-            text-align: center;
-            margin-top: 30px;
-            color: #007bff; /* Example color */
-        }
-        .battle-in-progress-section h2 {
-            margin-bottom: 10px;
-            font-size: 1.5em;
-        }
-        .remaining-time {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        /* Style to hide elements when battle starts */
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="css/room-detail.css" />
 </head>
 <body>
-    <div class="screen">
-        <div class="container">
-            <div class="back-button-container">
-                <a href="main.html" class="back-button">←</a>
-            </div>
-            <div class="opponent-info-section">
-                <div class="section-title">상대방 정보</div>
-                <div class="info-card">
-                    <div class="info-item">
-                        <div class="label">체중</div>
-                        <div class="value" id="detail-weight"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">키</div>
-                        <div class="value" id="detail-height"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">체지방률</div>
-                        <div class="value" id="detail-bodyfat"></div>
-                    </div>
-                </div>
-            </div>
+    <div id="loader" style="text-align:center;margin-top:40px;"></div>
+    <div id="roomDetailBody" style="display:none;">
+        <div class="screen">
+            <div class="container">
 
-            <div class="goal-setting-section">
-                 <div class="section-title">목표 설정</div>
-                <div class="info-card">
-                    <div class="info-item">
-                        <div class="label">목표 감량</div>
-                        <div class="value blue-text" id="detail-goal-reduction"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">기간</div>
-                        <div class="value" id="detail-duration"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="label">배팅금액</div>
-                        <div class="value green-text" id="detail-betting"></div>
-                    </div>
+                <div class="back-button-container">
+                    <a href="main.html" class="back-button">←</a>
                 </div>
-            </div>
 
-            <!-- Section to show when battle is NOT started -->
-            <div id="preBattleSection">
-                <div class="apply-button-container">
-                    <a href="upload.html"><button class="button">신청하기</button></a>
+                <!-- 1) 호스트 정보 섹션 (항상 보임) -->
+                <div class="host-info-section" style="margin-bottom:30px;">
+                    <div class="section-title">방장 정보</div>
+                    <div id="hostInfoContainer" class="info-card">
+                        <!-- JS에서 동적으로 삽입 -->
+                    </div>
                 </div>
+
+                <!-- 2) 참가자 정보 입력 폼 (호스트가 아닌 사용자에게만 보임) -->
+                <div id="participantInfoFormContainer" style="margin-bottom:30px;"></div>
+
+                <!-- 3) 참가자 정보 섹션 (제목만 변경됨) -->
+                <div class="opponent-info-section" style="margin-bottom:30px;">
+                    <div class="section-title">참가자 정보</div>
+                    <div id="opponentInfoContainer" class="info-card">
+                        <!-- JS에서 동적으로 삽입 -->
+                    </div>
+                </div>
+
+                <!-- 4) 목표 설정 섹션 (호스트가 설정한 목표·기간·배팅금액) -->
+                <div class="goal-setting-section" style="margin-bottom:30px;">
+                    <div class="section-title">목표 설정</div>
+                    <div class="info-card">
+                        <div class="info-item">
+                            <div class="label">목표 감량</div>
+                            <div class="value blue-text" id="detail-goal-reduction"></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">기간</div>
+                            <div class="value" id="detail-duration"></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">배팅금액</div>
+                            <div class="value green-text" id="detail-betting"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5) 호스트/참가자용 버튼 및 메시지 영역 -->
+                <div class="apply-button-container" style="margin-bottom:20px;">
+                    <button class="button" id="goSubmitBtn">인증하기</button>
+                </div>
+                <div id="countdownTimer" style="margin:20px 0;font-size:1.4em;font-weight:bold;display:none;"></div>
                 <div class="acceptance-text">
                     상대방이 24시간 이내에<br />수락하면 시작됩니다
                 </div>
-            </div>
 
-            <!-- Section to show when battle IS started -->
-            <div id="battleInProgressSection" class="battle-in-progress-section hidden">
-                <h2>현재 경쟁중!</h2>
-                <div class="remaining-time" id="remainingTime"></div>
             </div>
         </div>
     </div>
-
-    <script>
-        // --- Placeholder Variables (Replace with Backend Data) ---
-        // These should be fetched from your backend based on the room ID.
-        let isBattleStarted = false; // Set this to true if both users have accepted
-
-        // Example room data (replace with actual data from backend)
-        // Assuming roomCreationDate is a Date object or a string parsable by new Date()
-        const roomCreationDate = new Date('2023-10-27T10:00:00Z'); // Example start date/time (UTC)
-        const roomDurationSeconds = 2592000; // Example duration in seconds (30 days)
-        // --- End Placeholder Variables ---
-
-        const preBattleSection = document.getElementById('preBattleSection');
-        const battleInProgressSection = document.getElementById('battleInProgressSection');
-        const remainingTimeDiv = document.getElementById('remainingTime');
-
-        function updateBattleStateUI() {
-            // *** This check needs to be based on real-time data from your backend ***
-            // For example, fetch the room state and check if both have accepted.
-            // isBattleStarted = fetchedRoomState.bothAccepted;
-
-            if (isBattleStarted) {
-                preBattleSection.classList.add('hidden');
-                battleInProgressSection.classList.remove('hidden');
-                startRemainingTimeTimer(); // Start the timer when battle begins
-            } else {
-                preBattleSection.classList.remove('hidden');
-                battleInProgressSection.classList.add('hidden');
-                // Stop timer if it was running (optional, depending on flow)
-                if (timerInterval !== null) {
-                    clearInterval(timerInterval);
-                    timerInterval = null; // Reset timerInterval
-                }
-            }
-        }
-
-        let timerInterval = null;
-
-        function startRemainingTimeTimer() {
-            // Clear any existing timer to avoid multiple timers running
-            if (timerInterval !== null) {
-                clearInterval(timerInterval);
-            }
-
-            // Calculate battle end date using seconds
-            const battleEndDate = new Date(roomCreationDate.getTime() + roomDurationSeconds * 1000);
-
-            function updateRemainingTimeDisplay() {
-                const now = new Date();
-                const timeRemaining = battleEndDate.getTime() - now.getTime(); // Time difference in milliseconds
-
-                if (timeRemaining <= 0) {
-                    remainingTimeDiv.innerText = '경쟁 종료!';
-                    clearInterval(timerInterval); // Stop the timer
-                    timerInterval = null; // Reset timerInterval
-
-                    // *** Redirect to final-upload.html when the battle ends ***
-                    console.log("Battle ended. Redirecting to final upload page.");
-                    window.location.href = 'final-upload.html';
-
-                    return;
-                }
-
-                // Calculate remaining seconds
-                const remainingSeconds = Math.floor(timeRemaining / 1000);
-
-                remainingTimeDiv.innerText = `남은 기간: ${remainingSeconds}초`;
-            }
-
-            // Update the display immediately and then every second
-            updateRemainingTimeDisplay();
-            timerInterval = setInterval(updateRemainingTimeDisplay, 1000);
-        }
-
-        // --- Initial Load (Requires Backend Integration) ---
-        // On page load, fetch the room status (isBattleStarted, creation date, duration)
-        // from the backend and set the placeholder variables.
-        // Then call updateBattleStateUI().
-
-        // Example Simulation (Remove this and integrate with backend)
-        // Simulate that the battle has started for testing
-        // setTimeout(() => {
-        //     console.log("Simulating battle started.");
-        //     isBattleStarted = true; // Set this based on backend data
-        //     // roomCreationDate and roomDurationMonths should also be fetched
-        //     updateBattleStateUI();
-        // }, 1000); // Simulate battle starting 1 second after page load
-         // --- End Example Simulation ---
-
-        // Initial UI update based on the placeholder state
-        updateBattleStateUI();
-
-    </script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

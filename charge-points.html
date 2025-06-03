@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Charge Points</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/charge-points.css">
 </head>
 <body>
     <div class="container">
@@ -15,13 +15,14 @@
             <p>충전하실 금액을 입력해주세요</p>
             <div class="form-group">
                 <label for="charge-amount">금액</label>
-                <input type="number" id="charge-amount" required>
+                <input type="number" id="charge-amount" placeholder="예: 10000" required>
             </div>
             <button id="process-charge">결제하기</button>
              <button id="cancel-charge" class="secondary-button">취소</button>
         </div>
+        <p class = "note">OO은행 0000-00-000000로 입금 후 결제하기를 누르면 <br>24시간 이내에 충전이 됩니다.</p>
     </div>
 
-    <script src="main.js"></script>
+    <script type = "module" src="js/main.js"></script>
 </body>
 </html>
