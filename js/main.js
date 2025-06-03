@@ -737,20 +737,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ----- Battle Screen Page -----
-    function setupBattleScreen() {
+    async function setupBattleScreen() {
         const params = new URLSearchParams(window.location.search);
         const roomId = params.get('roomId');
-
         if (!roomId) return alert('잘못된 접근입니다.');
         const roomRef = doc(db, 'rooms', roomId);
-        
+
+        // 1) 방 정보를 미리 읽어서 roomData에 저장
+        const roomSnap = await getDoc(roomRef);
+        if (!roomSnap.exists()) {
+        alert('방 정보를 찾을 수 없습니다.');
+        return;
+        }
+        const roomData = roomSnap.data();
+        // 이제 roomData.host, roomData.height, roomData.weight, ...
+        //     roomData.opponentHeight, roomData.opponentWeight, ... 를 쓸 수 있음
+
+        // 2) 방 문서 업데이트(수락/시작 등) 감시
         onSnapshot(roomRef, snap => {
             if (!snap.exists()) return;
-            const data          = snap.data();
-            const acceptedCnt   = (data.accepted ?? []).length;
-            const allAccepted   = acceptedCnt === data.participants.length;
-            const started       = allAccepted && data.startAt;   // startAt 찍힌 순간부터 경기 시작
-
+            const data        = snap.data();
+            const acceptedCnt = (data.accepted ?? []).length;
+            const allAccepted = acceptedCnt === data.participants.length;
+            const started     = allAccepted && data.startAt;
             if (started) {
                 window.location.replace(`room-detail.html?roomId=${roomId}`);
             }
@@ -758,7 +767,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const acceptBtn = document.getElementById('acceptBtn');
         const rejectBtn = document.getElementById('rejectBtn');
-        // 기본은 비활성
         if (acceptBtn) acceptBtn.disabled = true;
         if (rejectBtn) rejectBtn.disabled = true;
 
@@ -766,151 +774,177 @@ document.addEventListener('DOMContentLoaded', async () => {
         const myEl       = document.getElementById('myVideoContainer');
         const statusEl   = document.getElementById('statusMessage');
 
-        // submissions 구독
+        // 3) submissions 컬렉션 구독: 영상이 올라오면 렌더링
         const subsRef = collection(db, 'rooms', roomId, 'submissions');
-        const q = query(subsRef, orderBy('createdAt', 'asc'));
-        
-        onSnapshot(q, snapshot => {
-            // ① 기존 컨테이너 초기화
-            const wipe = el =>
-        el.querySelectorAll('video,img,a,.media-item,.video-placeholder')
-        .forEach(n => n.remove());
-        wipe(opponentEl);
-        wipe(myEl);
+        const q       = query(subsRef, orderBy('createdAt', 'asc'));
 
-        // ② 업로더별로 분기 렌더링
-        const latestByUploader = {};
-        snapshot.forEach(docSnap => {
-            const data = docSnap.data();
-            const ts = data.createdAt.toMillis(); // Firestore Timestamp → milliseconds
-            // 기존보다 새롭다면 갱신
-            if (!latestByUploader[data.uploader] ||
-                ts > latestByUploader[data.uploader].data.createdAt.toMillis()) {
+        onSnapshot(q, snapshot => {
+            // ── 초기화 ──
+            const wipe = el =>
+                el.querySelectorAll('video,img,a,.media-item,.video-placeholder')
+                .forEach(n => n.remove());
+            wipe(opponentEl);
+            wipe(myEl);
+
+            // ── 업로더별 최신 문서만 선별 ──
+            const latestByUploader = {};
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const ts   = data.createdAt.toMillis();
+                if (!latestByUploader[data.uploader] ||
+                    ts > latestByUploader[data.uploader].data.createdAt.toMillis()) {
                     latestByUploader[data.uploader] = { docSnap, data };
                 }
             });
-
-        // ③(선택) 이전 업로드 문서 삭제
-        snapshot.forEach(docSnap => {
-            const uploader = docSnap.data().uploader;
-            // 최신 문서가 아니면 서버에서 제거
-            if (latestByUploader[uploader].docSnap.id !== docSnap.id) {
-                deleteDoc(docSnap.ref);
-            }
-        });
-
-        // ④ UI에 최신 영상만 렌더링
-       Object.values(latestByUploader).forEach(({ data }) => {
-            const box = document.createElement('div');
-            box.className = 'media-item';
-
-                const isVideo = (data.contentType ?? '').startsWith('video/')
-                        || data.url.match(/\.(mp4|mov|webm)$/i);
-            const isImage = (data.contentType ?? '').startsWith('image/')
-                        || data.url.match(/\.(png|jpe?g|gif|heic|webp)$/i);
-
-            let media;
-            if (isVideo) {
-                media = document.createElement('video');
-                media.src      = data.url;
-                media.controls = true;
-            } else if (isImage) {
-                media = document.createElement('img');
-                media.src      = data.url;
-                media.alt      = '인증 사진';
-            } else {
-                /* 정말 예외적인 형식만 링크로 */
-                media = document.createElement('a');
-                media.href        = data.url;
-                media.textContent = '파일 보기';
-                media.target      = '_blank';
-            }
-            media.style.maxWidth = '100%';
-            box.appendChild(media);
-
-            const me = localStorage.getItem('loggedInUser');
-            (data.uploader === me ? myEl : opponentEl).appendChild(box);
-        });
-
-        // ⑤ 상태 메시지 업데이트
-        const count = Object.keys(latestByUploader).length;
-        const bothUploaded = count >= 2;
-        statusEl.innerText = bothUploaded
-            ? '양쪽 영상이 모두 업로드되었습니다.'
-            : '상대방 영상을 기다리는 중...';
-        if (acceptBtn) acceptBtn.disabled = !bothUploaded;
-        if (rejectBtn) rejectBtn.disabled = !bothUploaded;
-    });
-
-    if (acceptBtn) {
-        acceptBtn.addEventListener('click', async () => {
-            const me = localStorage.getItem('loggedInUser');
-            try {
-                // 1) accepted[] 에 나 추가
-                await updateDoc(roomRef, { accepted: arrayUnion(me) });
-
-                // 2) 최신 스냅 재확인 : 두 사람 모두 수락이면 startAt 찍기
-                const fresh = await getDoc(roomRef);
-                const d     = fresh.data();
-                const everyoneAccepted =
-                    (d.accepted ?? []).length === d.participants.length;
-
-                if (everyoneAccepted && !d.startAt) {
-                    await updateDoc(roomRef, { startAt: serverTimestamp() });
+            // ── (선택) 이전 문서는 제거 ──
+            snapshot.forEach(docSnap => {
+                const uploader = docSnap.data().uploader;
+                if (latestByUploader[uploader].docSnap.id !== docSnap.id) {
+                    deleteDoc(docSnap.ref);
                 }
-
-                alert('수락되었습니다! 상대방을 기다리는 중…');
-                acceptBtn.disabled = true;        // 중복 클릭 방지
-            } catch (e) {
-                console.error('수락 오류', e);
-                alert('수락 처리 중 오류가 발생했습니다.');
-            }
-        });
-    }
-
-    const reuploadBtn   = document.getElementById('reuploadBtn');
-    if (reuploadBtn) {
-        reuploadBtn.addEventListener('click', () => {
-            window.location.href = `submit_results.html?roomId=${roomId}`;
-        });
-    }
-    if (rejectBtn) {
-        rejectBtn.addEventListener('click', async () => {
-            if (!confirm('내기를 취소하시겠습니까?')) return;
-        try {
-            const uploader = localStorage.getItem('loggedInUser');
-            // 1) 내 제출 문서 가져오기
-            const myQ = query(subsRef, where('uploader', '==', uploader));
-            const mySnaps = await getDocs(myQ);
-
-            // 2) Storage & Firestore 삭제
-            for (const snap of mySnaps.docs) {
-                const { storagePath } = snap.data();
-                if (storagePath) {
-                await deleteObject(storageRef(storage, storagePath));
-                }
-                await deleteDoc(snap.ref);
-            }
-
-            // 3) participants 배열에서 본인 제거(선택)
-            await updateDoc(doc(db, 'rooms', roomId), {
-                participants: arrayRemove(uploader)
             });
 
-            alert('내기를 취소했습니다.');
-            window.location.href = 'main.html';
-            } catch (e) {
-            console.error('취소 처리 오류', e);
-            alert('취소 처리 중 문제가 발생했습니다.');
-            }
+            // ── 미디어 + 키·몸무게·체지방을 화면에 렌더링 ──
+            Object.values(latestByUploader).forEach(({ data }) => {
+                const box = document.createElement('div');
+                box.className = 'media-item';
+
+                // (1) 실제 영상 또는 이미지 엘리먼트 생성
+                const isVideo = (data.contentType ?? '').startsWith('video/') 
+                                || data.url.match(/\.(mp4|mov|webm)$/i);
+                const isImage = (data.contentType ?? '').startsWith('image/') 
+                                || data.url.match(/\.(png|jpe?g|gif|heic|webp)$/i);
+
+                let media;
+                if (isVideo) {
+                    media = document.createElement('video');
+                    media.src      = data.url;
+                    media.controls = true;
+                } else if (isImage) {
+                    media = document.createElement('img');
+                    media.src      = data.url;
+                    media.alt      = '인증 사진';
+                } else {
+                    media = document.createElement('a');
+                    media.href        = data.url;
+                    media.textContent = '파일 보기';
+                    media.target      = '_blank';
+                }
+                media.style.maxWidth = '100%';
+                box.appendChild(media);
+
+                // (2) 미디어 바로 아래에 키·몸무게·체지방량 표시
+                const isHostUploader = (data.uploader === roomData.host);
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'info-block';
+                if (isHostUploader) {
+                    infoDiv.innerHTML = `
+                        <div class="info-item">
+                            <span class="info-key">키</span>
+                            <span class="info-value">${roomData.height ?? 'N/A'}cm</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">몸무게</span>
+                            <span class="info-value">${roomData.weight ?? 'N/A'}kg</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-key">체지방량</span>
+                            <span class="info-value">${roomData.bodyfat ?? 'N/A'}%</span>
+                        </div>
+                    `;
+                    } else {
+                    infoDiv.innerHTML = `
+                        <div class="info-item">
+                        <span class="info-key">키</span>
+                        <span class="info-value">${roomData.opponentHeight ?? 'N/A'}cm</span>
+                        </div>
+                        <div class="info-item">
+                        <span class="info-key">몸무게</span>
+                        <span class="info-value">${roomData.opponentWeight ?? 'N/A'}kg</span>
+                        </div>
+                        <div class="info-item">
+                        <span class="info-key">체지방량</span>
+                        <span class="info-value">${roomData.opponentBodyfat ?? 'N/A'}%</span>
+                        </div>
+                    `;
+                    }
+                    box.appendChild(infoDiv);
+
+                // (3) 로그인 사용자와 비교해서 올바른 영역에 추가
+                const me = localStorage.getItem('loggedInUser');
+                if (data.uploader === me) {
+                    myEl.appendChild(box);
+                } else {
+                    opponentEl.appendChild(box);
+                }
+            });
+
+            // ── 상태 메시지 및 버튼 활성화 ──
+            const count        = Object.keys(latestByUploader).length;
+            const bothUploaded = (count >= 2);
+            statusEl.innerText = bothUploaded
+                ? '양쪽 영상이 모두 업로드되었습니다.'
+                : '상대방 영상을 기다리는 중...';
+            if (acceptBtn) acceptBtn.disabled = !bothUploaded;
+            if (rejectBtn) rejectBtn.disabled = !bothUploaded;
         });
-    }
 
-}
+        // 4) 수락 버튼 클릭 시
+        if (acceptBtn) {
+            acceptBtn.addEventListener('click', async () => {
+                const me = localStorage.getItem('loggedInUser');
+                try {
+                    await updateDoc(roomRef, { accepted: arrayUnion(me) });
+                    const fresh = await getDoc(roomRef);
+                    const d     = fresh.data();
+                    const everyoneAccepted =
+                        (d.accepted ?? []).length === d.participants.length;
+                    if (everyoneAccepted && !d.startAt) {
+                        await updateDoc(roomRef, { startAt: serverTimestamp() });
+                    }
+                    alert('수락되었습니다! 상대방을 기다리는 중…');
+                    acceptBtn.disabled = true;
+                } catch (e) {
+                    console.error('수락 오류', e);
+                    alert('수락 처리 중 오류가 발생했습니다.');
+                }
+            });
+        }
 
-    // 페이지가 battle-screen 일 때만 실행
-    if (document.getElementById('opponentVideoContainer')) {
-    setupBattleScreen();
+        // 5) 재업로드 버튼 클릭 시
+        const reuploadBtn = document.getElementById('reuploadBtn');
+        if (reuploadBtn) {
+            reuploadBtn.addEventListener('click', () => {
+                window.location.href = `submit_results.html?roomId=${roomId}`;
+            });
+        }
+
+        // 6) 거절 버튼 클릭 시
+        if (rejectBtn) {
+            rejectBtn.addEventListener('click', async () => {
+                if (!confirm('내기를 취소하시겠습니까?')) return;
+                try {
+                    const uploader = localStorage.getItem('loggedInUser');
+                    const myQ = query(subsRef, where('uploader', '==', uploader));
+                    const mySnaps = await getDocs(myQ);
+                    for (const snap of mySnaps.docs) {
+                        const { storagePath } = snap.data();
+                        if (storagePath) {
+                            await deleteObject(storageRef(storage, storagePath));
+                        }
+                        await deleteDoc(snap.ref);
+                    }
+                    await updateDoc(doc(db, 'rooms', roomId), {
+                        participants: arrayRemove(uploader)
+                    });
+                    alert('내기를 취소했습니다.');
+                    window.location.href = 'main.html';
+                } catch (e) {
+                    console.error('취소 처리 오류', e);
+                    alert('취소 처리 중 문제가 발생했습니다.');
+                }
+            });
+        }
     }
 
 // ---- endresults -----------
