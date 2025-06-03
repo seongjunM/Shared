@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>Room Details</title>
+    <link rel="stylesheet" href="css/room-detail.css" />
+</head>
+<body>
+    <div id="loader" style="text-align:center;margin-top:40px;"></div>
+    <div id="roomDetailBody" style="display:none;">
+        <div class="screen">
+            <div class="container">
+
+                <div class="back-button-container">
+                    <a href="main.html" class="back-button">←</a>
+                </div>
+
+                <!-- 1) 호스트 정보 섹션 (항상 보임) -->
+                <div class="host-info-section" style="margin-bottom:30px;">
+                    <div class="section-title">방장 정보</div>
+                    <div id="hostInfoContainer" class="info-card">
+                        <!-- JS에서 동적으로 삽입 -->
+                    </div>
+                </div>
+
+                <!-- 2) 참가자 정보 입력 폼 (호스트가 아닌 사용자에게만 보임) -->
+                <div id="participantInfoFormContainer" style="margin-bottom:30px;"></div>
+
+                <!-- 3) 참가자 정보 섹션 (제목만 변경됨) -->
+                <div class="opponent-info-section" style="margin-bottom:30px;">
+                    <div class="section-title">참가자 정보</div>
+                    <div id="opponentInfoContainer" class="info-card">
+                        <!-- JS에서 동적으로 삽입 -->
+                    </div>
+                </div>
+
+                <!-- 4) 목표 설정 섹션 (호스트가 설정한 목표·기간·배팅금액) -->
+                <div class="goal-setting-section" style="margin-bottom:30px;">
+                    <div class="section-title">목표 설정</div>
+                    <div class="info-card">
+                        <div class="info-item">
+                            <div class="label">목표 감량</div>
+                            <div class="value blue-text" id="detail-goal-reduction"></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">기간</div>
+                            <div class="value" id="detail-duration"></div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">배팅금액</div>
+                            <div class="value green-text" id="detail-betting"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5) 호스트/참가자용 버튼 및 메시지 영역 -->
+                <div class="apply-button-container" style="margin-bottom:20px;">
+                    <button class="button" id="goSubmitBtn">인증하기</button>
+                </div>
+                <div id="countdownTimer" style="margin:20px 0;font-size:1.4em;font-weight:bold;display:none;"></div>
+                <div class="acceptance-text">
+                    상대방이 24시간 이내에<br />수락하면 시작됩니다
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

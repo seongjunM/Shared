@@ -1,0 +1,14 @@
+@import url('common.css');
+
+.charge-form {
+    margin-top: 20px;
+}
+
+.charge-form p{
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.charge-form button {
+    margin-top: 10px;
+}

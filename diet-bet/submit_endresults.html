@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결과 제출</title>
+    <link rel="stylesheet" href="css/submit_endresults.css">
+</head>
+<body>
+    <!-- <div class="header-results container">
+        <a href="room-detail.html" class="back-btn">&larr;</a>
+    </div> -->
+
+    <div class="results-section container">
+        <div class="back-button-container">
+            <a href="room-detail.html" class="back-button">←</a>
+        </div>
+        <div class="video-upload-card">
+            <h2>인바디 측정 영상 업로드</h2>
+
+            <div class="upload-area" id="uploadArea">
+                <input type="file" id="videoInput" accept="*/*" style="display:none;">
+                <p><span class="upload-link">영상을 업로드 해주세요.</span></p>
+
+                <video id="videoPreview" controls
+                       style="display:none; max-width:100%; height:auto; border-radius:8px;"></video>
+                <img   id="imagePreview" style="display:none; max-width:100%; height:auto; border-radius:8px;"alt="사진 미리보기">
+
+                <span  id="fileName"       class="file-name" style="display:none;"></span>
+                <button id="removeVideoBtn" class="button secondary-button"
+                        style="display:none; margin-top:10px;">영상 제거</button>
+            </div>
+
+            <p class="upload-instruction">
+                <a href = "guide.html">어떻게 업로드 하나요?</a>
+            </p>
+        </div>
+
+        <div class="submit-card">
+            <button class="button" id="submitendResultsBtn">인증하기</button>
+            <p class="submit-note">
+                영상 업로드 후 ‘인증하기’를 누르면<br>
+                <strong>24 시간 이내에 결과가 결정됩니다.</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- 전용 스크립트 -->
+     <script type = "module" src="js/main.js"></script>
+    
+</body>
+</html>

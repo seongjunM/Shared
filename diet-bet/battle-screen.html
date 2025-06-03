@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Battle Screen</title>
+  <link rel="stylesheet" href="css/battle-screen.css" />
+</head>
+<body>
+  <div class="container battle-screen">
+    <div class="back-button-container">
+      <a href="main.html" class="back-button">&larr;</a>
+    </div>
+    <h2>Battle Screen</h2>
+    <div id="statusMessage" class="status-message"></div>
+
+    <div class="video-section">
+      <div class="video-container" id="opponentVideoContainer">
+        <h2>상대방 영상</h2>
+        <div class="video-placeholder">
+          상대방이 아직 업로드하지 않았습니다
+        </div>
+      </div>
+      <div class="video-container" id="myVideoContainer">
+        <h2>내 영상</h2>
+        <div class="video-placeholder">
+          업로드한 영상이 없습니다
+        </div>
+      </div>
+      
+      <input type="file" id="reuploadInput" accept="*/*" style="display:none;" />
+        <div class="button-group">
+            <button id="reuploadBtn" class="button secondary-button">재업로드</button>
+            <button id="acceptBtn" class="button"        disabled>수락</button>
+            <button id="rejectBtn" class="button secondary-button" disabled>거절</button>
+        </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

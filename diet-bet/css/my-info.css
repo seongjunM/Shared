@@ -1,0 +1,10 @@
+/* my-info.css */
+
+/* Import common styles */
+@import url("common.css");
+
+/* Specific styles for the my-info page */
+
+.container {
+ max-width: 400px; /* Adjusted to match common.css container */
+}

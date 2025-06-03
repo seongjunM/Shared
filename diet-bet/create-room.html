@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Room</title>
+    <link rel="stylesheet" href="css/create-room.css">
+</head>
+<body>
+    <div class="container">
+        <div class="back-button-container">
+            <a href="main.html" class="back-button">←</a>
+        </div>
+        <h2>방 만들기</h2>
+        <form id="create-room-form">
+            <h3>내 정보</h3>
+            <div class="form-group">
+                <label for="user-height">키 (cm)</label>
+                <input type="number" id="user-height" required>
+            </div>
+            <div class="form-group">
+                <label for="user-weight">몸무게 (kg)</label>
+                <input type="number" id="user-weight" required>
+            </div>
+            <div class="form-group">
+                <label for="user-bodyfat">체지방량 (%)</label>
+                <input type="number" id="user-bodyfat" step="0.1" required>
+            </div>
+
+            <h3>방 정보</h3>
+            <div class="form-group">
+                <label for="room-goal">목표 체지방률 (%)</label>
+                <input type="number" id="room-goal" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="room-betting">배팅 금액 (pt)</label>
+                <input type="number" id="room-betting" required>
+            </div>
+            <div class="form-group">
+                <label for="room-duration">기간 (초)</label>
+                <input type="number" id="room-duration" required>
+            </div>
+
+            <button type="submit">방 만들기</button>
+        </form>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

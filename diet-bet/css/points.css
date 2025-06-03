@@ -1,0 +1,6 @@
+@import url('common.css');
+
+.point-info h2 {
+    color: #007bff;
+    margin: 10px 0;
+}
